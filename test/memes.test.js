@@ -11,9 +11,9 @@ describe('testing all meme routes', () => {
     connect();
   });
 
-  // beforeEach(() => {
-  //   return mongoose.connection.close();
-  // });
+  beforeEach(() => {
+    return mongoose.connection.close();
+  });
 
   afterAll(() => {
     return mongoose.connection.close();
@@ -69,6 +69,49 @@ describe('testing all meme routes', () => {
           image: 'some url',
           bottomField: 'some text',
           __v: 0 
+        });
+      });
+  });
+
+  it('updates a meme with PUT', async() => {
+    const meme = await Meme.create({
+      topField: 'some other text',
+      image: 'some url',
+      bottomField: 'some text' 
+    });
+
+    return request(app)
+      .put(`/api/v1/memes/${meme._id}`)
+      .send({
+        topField: 'new text',
+        image: 'other url',
+        bottomField: 'new other text' 
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.any(String),
+          topField: 'new text',
+          image: 'other url',
+          bottomField: 'new other text',
+          __v: 0 
+        });
+      });
+  });
+
+  it('deletes chosen meme', async() => {
+    const meme = await Meme.create({
+      topField: 'new text',
+      image: 'other url',
+      bottomField: 'new other text'
+    });
+
+    return request(app)
+      .delete(`/api/v1/memes/${meme._id}`)
+      .then(res => {
+        expect(res.body).toEqual({
+          topField: 'new text',
+          image: 'other url',
+          bottomField: 'new other text'
         });
       });
   });
