@@ -1,4 +1,5 @@
 require('dotenv').config();
+// jest.setTimeout(10000);
 
 const app = require('../lib/app');
 const request = require('supertest');
